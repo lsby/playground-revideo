@@ -2,13 +2,42 @@ import axios from 'axios'
 import fs from 'fs'
 import { z } from 'zod'
 
+type CosyVoice配置 = {
+  音色: '中文女' | '中文男'
+  语速?: number
+  提示音?: {
+    语音wav地址: string
+    文本: string
+  }
+}
+
 export class CosyVoice {
-  constructor(private 服务器地址: string) {}
+  constructor(
+    private 服务器地址: string,
+    private 配置: CosyVoice配置,
+  ) {}
 
   async 生成acc地址(文本: string): Promise<string[]> {
+    let 使用提示音 = this.配置.提示音 === void 0 ? false : true
+    let 提示音wav地址 = this.配置.提示音?.语音wav地址 ?? null
+    let 提示音文本 = this.配置.提示音?.文本 ?? null
+
     let 请求结果 = await axios.post(
       `${this.服务器地址}/gradio_api/call/generate_audio`,
-      { data: [文本, '预训练音色', '中文女', '', null, null, '', 0, false, 1] },
+      {
+        data: [
+          文本,
+          使用提示音 ? '3s极速复刻' : '预训练音色',
+          this.配置.音色,
+          使用提示音 ? 提示音文本 : '',
+          null,
+          使用提示音 ? { path: 提示音wav地址 } : null,
+          '',
+          0,
+          false,
+          this.配置.语速 ?? 1,
+        ],
+      },
       { headers: { 'Content-Type': 'application/json' } },
     )
     let 事件id = z.object({ event_id: z.string() }).parse(请求结果.data).event_id

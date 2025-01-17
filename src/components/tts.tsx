@@ -3,9 +3,25 @@ import { Promisable, ThreadGenerator, createRef, waitFor } from '@revideo/core'
 import { z } from 'zod'
 import { CosyVoice } from '../model/cosy-voice'
 
-let cosyVoice = new CosyVoice('http://127.0.0.1:8000')
+let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
+  音色: '中文女',
+  语速: 1,
+})
+// let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
+//   音色: '中文男',
+//   语速: 1,
+//   提示音: {
+//     语音wav地址: '声音素材/我的声音素材01.wav',
+//     文本: '这个视频是紧接着之前那个视频的, 我就不再把之前讲过的重复一遍了.',
+//   },
+// })
 
 let 存储名称 = 'memoizeCache'
+
+// ======== 调试时打开 删除缓存 ========
+// localStorage.removeItem(存储名称)
+// =====================================
+
 let 存储数据 = localStorage.getItem(存储名称) ?? '{}'
 let 存储数据验证 = z.record(z.string(), z.string()).safeParse(JSON.parse(存储数据))
 
