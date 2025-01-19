@@ -18,4 +18,16 @@ export let 层次结构 = makeScene2D('层次结构', function* (view) {
 
   view.add(<Txt>你好</Txt>)
   yield* waitFor(0.5)
+
+  // https://motioncanvas.io/docs/layouts/
+  // 容器可以使用布局
+  yield view.removeChildren()
+  view.add(
+    <Rect layout direction={'column'}>
+      <Txt>1</Txt>
+      <Txt>2</Txt>
+      <Txt>3</Txt>
+    </Rect>,
+  )
+  yield* waitFor(0.5)
 })
