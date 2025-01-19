@@ -53,7 +53,7 @@ export function* tts(
 
   let 音频引用 = createRef<Audio>()
   yield view.add(<Audio src={语音地址} play={true} ref={音频引用} />)
-  yield view.add(<Txt text={文本} textWrap={true}></Txt>)
+  yield view.add(<Txt text={文本} textWrap={true} textAlign={'center'}></Txt>)
   yield* waitFor(音频引用().getDuration())
   yield view.removeChildren()
 }
