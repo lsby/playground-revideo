@@ -3,16 +3,15 @@ import { Promisable, ThreadGenerator, createRef, waitFor } from '@revideo/core'
 import { z } from 'zod'
 import { CosyVoice } from '../model/cosy-voice'
 
-// let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
-//   模式: '预训练',
-//   音色: '中文女',
-//   语速: 1,
-// })
 let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
-  模式: '语音复刻',
-  语音wav路径: '声音素材/我的声音素材01.wav',
-  语音wav内容: '这个视频是紧接着之前那个视频的, 我就不再把之前讲过的重复一遍了.',
+  模式: '预训练',
+  音色: '中文女',
 })
+// let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
+//   模式: '语音复刻',
+//   语音wav路径: '声音素材/我的声音素材01.wav',
+//   语音wav内容: '这个视频是紧接着之前那个视频的, 我就不再把之前讲过的重复一遍了.',
+// })
 
 let 存储名称 = 'memoizeCache'
 
