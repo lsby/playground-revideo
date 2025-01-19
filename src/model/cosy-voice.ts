@@ -18,7 +18,7 @@ export class CosyVoice {
     private 配置: CosyVoice配置,
   ) {}
 
-  async 生成acc地址(文本: string, 选项?: { 指导?: string; 语速?: number }): Promise<string[]> {
+  async 生成acc地址(文本: string, 选项?: { 指导?: string; 语速?: number; 种子?: number }): Promise<string[]> {
     let 选择: string
     let 预训练音色: string | null
     let 提示音: { path: string } | null
@@ -51,7 +51,18 @@ export class CosyVoice {
     let 请求结果 = await axios.post(
       `${this.服务器地址}/gradio_api/call/generate_audio`,
       {
-        data: [文本, 选择, 预训练音色, 提示音文本, null, 提示音, 选项?.指导 ?? '', 0, false, 选项?.语速 ?? 1],
+        data: [
+          文本,
+          选择,
+          预训练音色,
+          提示音文本,
+          null,
+          提示音,
+          选项?.指导 ?? '',
+          选项?.种子 ?? 0,
+          false,
+          选项?.语速 ?? 1,
+        ],
       },
       { headers: { 'Content-Type': 'application/json' } },
     )
