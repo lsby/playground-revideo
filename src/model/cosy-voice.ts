@@ -2,41 +2,56 @@ import axios from 'axios'
 import fs from 'fs'
 import { z } from 'zod'
 
-type CosyVoice配置 = {
-  音色: '中文女' | '中文男'
-  语速?: number
-  提示音?: {
-    语音wav地址: string
-    文本: string
-  }
-}
-
+type CosyVoice配置 =
+  | {
+      模式: '预训练'
+      音色: '中文女' | '中文男'
+    }
+  | {
+      模式: '语音复刻'
+      语音wav路径: string
+      语音wav内容: string
+    }
 export class CosyVoice {
   constructor(
     private 服务器地址: string,
     private 配置: CosyVoice配置,
   ) {}
 
-  async 生成acc地址(文本: string): Promise<string[]> {
-    let 使用提示音 = this.配置.提示音 === void 0 ? false : true
-    let 提示音wav地址 = this.配置.提示音?.语音wav地址 ?? null
-    let 提示音文本 = this.配置.提示音?.文本 ?? null
+  async 生成acc地址(文本: string, 选项?: { 指导?: string; 语速?: number }): Promise<string[]> {
+    let 选择: string
+    let 预训练音色: string | null
+    let 提示音: { path: string } | null
+    let 提示音文本: string | null
+
+    switch (this.配置.模式) {
+      case '预训练': {
+        选择 = '预训练音色'
+        预训练音色 = this.配置.音色
+        提示音 = null
+        提示音文本 = null
+        break
+      }
+      case '语音复刻': {
+        选择 = '3s极速复刻'
+        预训练音色 = null
+        提示音 = { path: this.配置.语音wav路径 }
+        提示音文本 = this.配置.语音wav内容
+        break
+      }
+      default: {
+        throw new Error('意外的模式')
+      }
+    }
+
+    if (选项?.指导 !== void 0) {
+      选择 = '自然语言控制'
+    }
 
     let 请求结果 = await axios.post(
       `${this.服务器地址}/gradio_api/call/generate_audio`,
       {
-        data: [
-          文本,
-          使用提示音 ? '3s极速复刻' : '预训练音色',
-          this.配置.音色,
-          使用提示音 ? 提示音文本 : '',
-          null,
-          使用提示音 ? { path: 提示音wav地址 } : null,
-          '',
-          0,
-          false,
-          this.配置.语速 ?? 1,
-        ],
+        data: [文本, 选择, 预训练音色, 提示音文本, null, 提示音, 选项?.指导 ?? '', 0, false, 选项?.语速 ?? 1],
       },
       { headers: { 'Content-Type': 'application/json' } },
     )

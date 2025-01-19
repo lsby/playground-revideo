@@ -3,18 +3,16 @@ import { Promisable, ThreadGenerator, createRef, waitFor } from '@revideo/core'
 import { z } from 'zod'
 import { CosyVoice } from '../model/cosy-voice'
 
-let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
-  音色: '中文女',
-  语速: 1,
-})
 // let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
-//   音色: '中文男',
+//   模式: '预训练',
+//   音色: '中文女',
 //   语速: 1,
-//   提示音: {
-//     语音wav地址: '声音素材/我的声音素材01.wav',
-//     文本: '这个视频是紧接着之前那个视频的, 我就不再把之前讲过的重复一遍了.',
-//   },
 // })
+let cosyVoice = new CosyVoice('http://127.0.0.1:8000', {
+  模式: '语音复刻',
+  语音wav路径: '声音素材/我的声音素材01.wav',
+  语音wav内容: '这个视频是紧接着之前那个视频的, 我就不再把之前讲过的重复一遍了.',
+})
 
 let 存储名称 = 'memoizeCache'
 
@@ -31,8 +29,11 @@ if (存储数据验证.error === void 0) 缓存 = 存储数据验证.data
 export function* tts(
   view: Rect,
   文本: string,
+  选项?: { 指导?: string; 语速?: number },
 ): Generator<void | Promise<any> | ThreadGenerator | Promisable<any>, void> {
-  let 语音地址: string | null = 缓存[文本] ?? null
+  let 缓存key = JSON.stringify({ 文本, 选项 })
+
+  let 语音地址: string | null = 缓存[缓存key] ?? null
 
   if (语音地址 !== null) {
     let 地址有效 = yield urlIsValid(语音地址)
@@ -44,9 +45,9 @@ export function* tts(
       z
         .string()
         .array()
-        .parse(yield cosyVoice.生成acc地址(文本))[0] ?? null
+        .parse(yield cosyVoice.生成acc地址(文本, 选项))[0] ?? null
     if (语音地址 === null) throw new Error('生成语音失败')
-    缓存[文本] = 语音地址
+    缓存[缓存key] = 语音地址
     localStorage.setItem(存储名称, JSON.stringify(缓存))
   }
 
