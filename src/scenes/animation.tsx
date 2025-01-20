@@ -14,7 +14,7 @@ export let 动画 = makeScene2D('动画', function* (view) {
   yield* circle().fill('green', 1).to('red', 1)
 
   // 如果想同时执行很多动画, 可以用组合器
-  yield* all(circle().fill('#ff0000', 0.5), circle().size(200, 1))
+  yield* all(circle().fill('#0000ff', 0.5), circle().size(200, 1))
 
   // https://motioncanvas.io/docs/tweening
   // 更本质的方法是通过补间
