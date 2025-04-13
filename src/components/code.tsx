@@ -10,11 +10,7 @@ export function* 代码组件(
   view.add(
     <>
       <Rect width={'100%'} height={'100%'} fill={选项.背景颜色} />
-      <Code
-        highlighter={new LezerHighlighter(parser.configure({ dialect: 'jsx ts' }))}
-        fontSize={选项.字体大小}
-        code={代码}
-      />
+      <Code highlighter={new LezerHighlighter(parser.configure({ dialect: 'jsx ts' }))} fontSize={选项.字体大小} code={代码} />
     </>,
   )
 }
