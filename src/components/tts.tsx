@@ -28,7 +28,7 @@ if (存储数据验证.error === void 0) 缓存 = 存储数据验证.data
 export function* tts(
   view: Rect,
   文本: string,
-  选项?: { 指导?: string; 语速?: number; 种子?: number },
+  选项: { 字幕颜色: string; 指导?: string; 语速?: number; 种子?: number },
 ): Generator<void | Promise<any> | ThreadGenerator | Promisable<any>, void> {
   let 缓存key = JSON.stringify({ 文本, 选项 })
 
@@ -52,7 +52,7 @@ export function* tts(
 
   let 音频引用 = createRef<Audio>()
   yield view.add(<Audio src={语音地址} play={true} ref={音频引用} />)
-  yield view.add(<Txt text={文本} textWrap={true} textAlign={'center'}></Txt>)
+  yield view.add(<Txt text={文本} textWrap={true} textAlign={'center'} fill={选项.字幕颜色}></Txt>)
   yield* waitFor(音频引用().getDuration())
   yield view.removeChildren()
 }
